@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prioridades · 9 Nov 2026</title>
+<style>
+  :root{--bg:#0f1720;--card:#16212d;--text:#e8eef4;--muted:#8aa0b4;--accent:#2bb3a3;--done:#3a4a5a}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);padding:20px 16px 40px}
+  h1{font-size:1.4rem;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:.9rem;margin-bottom:18px}
+  .progress{height:6px;background:#22303e;border-radius:3px;overflow:hidden;margin-bottom:20px}
+  .bar{height:100%;background:var(--accent);width:0;transition:width .3s}
+  .card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px;border-left:4px solid var(--accent);transition:opacity .2s}
+  .card.done{border-left-color:var(--done);opacity:.6}
+  .card.done .title,.card.done .body{text-decoration:line-through}
+  .tag{font-size:.75rem;font-weight:700;letter-spacing:.05em;color:var(--accent);text-transform:uppercase}
+  .title{font-weight:600;font-size:1.05rem;margin:4px 0 6px}
+  .body{color:#c3d0dc;font-size:.92rem;line-height:1.4}
+  .row{display:flex;gap:8px;margin-top:12px}
+  button{flex:0 0 auto;border:0;border-radius:10px;padding:10px 14px;font-size:.95rem;font-weight:600;background:var(--accent);color:#04201c;cursor:pointer}
+  .card.done button.doneBtn{background:#33475a;color:var(--text)}
+  textarea{width:100%;margin-top:10px;background:#0f1720;color:var(--text);border:1px solid #2a3a4a;border-radius:10px;padding:10px;font-size:.95rem;min-height:44px;resize:vertical;font-family:inherit}
+  .rule{background:#2a1f12;color:#f3c98b;border-radius:12px;padding:12px 14px;font-size:.9rem;margin-top:6px}
+  .reset{background:none;color:var(--muted);text-decoration:underline;padding:6px 0;font-weight:400;margin-top:16px}
+  .smoke{display:flex;justify-content:space-between;align-items:center;background:#2a1f12;border-radius:14px;padding:14px 16px;margin-bottom:16px}
+  .cig{font-size:2.4rem;font-weight:800;color:#f3c98b;line-height:1.1}
+  .cbtns{display:flex;gap:8px}
+  .plus{background:#f3a54a;color:#2a1600;font-size:1.3rem;padding:14px 20px}
+  .minus{background:#3a2c1a;color:#f3c98b;font-size:1.3rem;padding:14px 16px}
+  .sec{font-size:1.1rem;margin:22px 0 10px}
+  .mtotal{font-size:2rem;font-weight:800;margin:4px 0 10px}
+  .mrow{display:flex;gap:8px}
+  .mrow input{flex:1;min-width:0;background:#0f1720;color:var(--text);border:1px solid #2a3a4a;border-radius:10px;padding:11px;font-size:1rem}
+  .exps{list-style:none;padding:0;margin:10px 0 0}
+  .exps li{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #22303e;font-size:.95rem}
+  .exps li button{background:none;color:var(--muted);padding:2px 8px;font-size:1rem}
+  .card.money.done{opacity:1}
+  .tip{margin-top:10px;font-size:.88rem;color:#c3d0dc;background:#0f1720;border-radius:10px;padding:10px}
+</style>
+</head>
+<body>
+<h1>Bom dia Thony 🌊</h1>
+<div class="sub">Segunda, 9 de novembro de 2026 · <span id="count">0/4</span> feitas</div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="smoke">
+  <div><div class="tag" style="color:#f3c98b">🚬 Cigarros hoje</div><div id="cig" class="cig">0</div></div>
+  <div class="cbtns"><button id="minus" class="minus">−</button><button id="plus" class="plus">+1</button></div>
+</div>
+<div id="list"></div>
+<h2 class="sec">💰 Dinheiro hoje</h2>
+<div class="card money">
+  <div class="tag">Gastos de hoje</div>
+  <div class="mtotal"><span id="mtotal">0</span> MT</div>
+  <div class="mrow">
+    <input id="amt" type="number" inputmode="decimal" placeholder="Valor (MT)">
+    <input id="cat" type="text" placeholder="Em quê? (ex.: comida, gasolina)">
+  </div>
+  <button id="addExp" style="width:100%;margin-top:8px">+ Adicionar gasto</button>
+  <ul id="exps" class="exps"></ul>
+  <div class="row" style="align-items:center;margin-top:10px">
+    <button id="mdone" class="doneBtn">✓ Revi os gastos de hoje</button>
+  </div>
+  <textarea id="mnote" placeholder="Nota (ex.: gastei sem precisar em...)"></textarea>
+</div>
+<div class="card money">
+  <div class="tag">Meta de poupança do mês</div>
+  <div class="mrow"><input id="goal" type="number" inputmode="decimal" placeholder="Meta (MT)"><input id="saved" type="number" inputmode="decimal" placeholder="Já poupei (MT)"></div>
+  <div class="progress" style="margin:10px 0 4px"><div class="bar" id="gbar"></div></div>
+  <div class="body" id="gtxt">Define uma meta para ver o progresso.</div>
+  <div class="tip">💡 <b>Dica:</b> <span id="tip"></span></div>
+</div>
+<div class="rule">Nada de projetos novos hoje até a 2 estar feita.</div>
+<button class="reset" onclick="resetAll()">Limpar tudo</button>
+<script>
+const KEY='prioridades-2026-11-09';
+const items=[
+ {tag:'UWE',title:'Mergulho das 8h: tu és skipper',body:'Shallow reef com o Namesak como DM e 7 mergulhadores. Às 10h os Pinnacles são com o João e o Ti Tos. Faz bem feito e não metas mais nada a meio.'},
+ {tag:'VINDHI',title:'Fecha os dados do Viator',body:'Depois do mar, a descansar: nome, duração, preço (por pessoa ou por grupo), dias e horas, ponto de encontro e o que está incluído. As 8 fotos já estão prontas.'},
+ {tag:'VINDHI',title:'Um conteúdo leve à noite',body:'A Dona prepara o rascunho e tu só aprovas.'},
+ {tag:'SAÚDE',title:'Um mês sem fumar, a começar hoje',body:'O objetivo é acabar com o mau hálito que já dura um ano. Quando bater a vontade, espera 10 minutos antes do primeiro cigarro: é aí que começam as séries de 2 ou 3 seguidos.'}
+];
+let state=JSON.parse(localStorage.getItem(KEY)||'{}');
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function render(){
+ const list=document.getElementById('list');list.innerHTML='';
+ let n=0;
+ items.forEach((it,i)=>{
+  const s=state[i]||{done:false,note:''};if(s.done)n++;
+  const c=document.createElement('div');c.className='card'+(s.done?' done':'');
+  c.innerHTML=`<div class="tag">${i+1} · ${it.tag}</div><div class="title">${it.title}</div><div class="body">${it.body}</div>
+   <div class="row"><button class="doneBtn">${s.done?'↺ Desfazer':'✓ Feito'}</button></div>
+   <textarea placeholder="Nota (ex.: difícil, falta X...)"></textarea>`;
+  const ta=c.querySelector('textarea');ta.value=s.note;
+  ta.addEventListener('input',e=>{state[i]={...(state[i]||{done:false}),note:e.target.value};save()});
+  c.querySelector('.doneBtn').onclick=()=>{state[i]={...(state[i]||{note:''}),done:!s.done};save();render()};
+  list.appendChild(c);
+ });
+ document.getElementById('count').textContent=n+'/'+items.length;
+ document.getElementById('bar').style.width=(n/items.length*100)+'%';
+}
+const CK=KEY+'-cig';
+let cig=localStorage.getItem(CK);cig=cig===null?3:parseInt(cig);
+function showCig(){document.getElementById('cig').textContent=cig;localStorage.setItem(CK,cig)}
+document.getElementById('plus').onclick=()=>{cig++;showCig()};
+document.getElementById('minus').onclick=()=>{if(cig>0)cig--;showCig()};
+showCig();
+const MK=KEY+'-money', GK='poupanca-'+KEY.slice(12,19);
+let m=JSON.parse(localStorage.getItem(MK)||'{"exps":[],"done":false,"note":""}');
+let g=JSON.parse(localStorage.getItem(GK)||'{"goal":"","saved":""}');
+const fmt=n=>Number(n).toLocaleString('pt-PT',{maximumFractionDigits:2});
+function renderMoney(){
+ localStorage.setItem(MK,JSON.stringify(m));
+ const ul=document.getElementById('exps');ul.innerHTML='';
+ let t=0;m.exps.forEach((e,i)=>{t+=e.a;const li=document.createElement('li');
+  li.innerHTML=`<span>${e.t} · ${e.c||'—'}</span><span><b>${fmt(e.a)} MT</b> <button>✕</button></span>`;
+  li.querySelector('button').onclick=()=>{m.exps.splice(i,1);renderMoney()};ul.appendChild(li)});
+ document.getElementById('mtotal').textContent=fmt(t);
+ const b=document.getElementById('mdone');b.textContent=m.done?'↺ Desfazer':'✓ Revi os gastos de hoje';
+ b.parentElement.parentElement.classList.toggle('done',m.done);
+}
+document.getElementById('addExp').onclick=()=>{const a=parseFloat(document.getElementById('amt').value);if(!a||a<=0)return;
+ const d=new Date();m.exps.push({a,c:document.getElementById('cat').value.trim(),t:d.toTimeString().slice(0,5)});
+ document.getElementById('amt').value='';document.getElementById('cat').value='';renderMoney()};
+document.getElementById('mdone').onclick=()=>{m.done=!m.done;renderMoney()};
+const mn=document.getElementById('mnote');mn.value=m.note;mn.oninput=e=>{m.note=e.target.value;renderMoney()};
+function renderGoal(){localStorage.setItem(GK,JSON.stringify(g));const G=parseFloat(g.goal)||0,S=parseFloat(g.saved)||0;
+ document.getElementById('gbar').style.width=G?Math.min(100,S/G*100)+'%':'0';
+ document.getElementById('gtxt').textContent=G?`${fmt(S)} de ${fmt(G)} MT (${Math.round(S/G*100)}%). Faltam ${fmt(Math.max(0,G-S))} MT.`:'Define uma meta para ver o progresso.'}
+['goal','saved'].forEach(k=>{const el=document.getElementById(k);el.value=g[k];el.oninput=e=>{g[k]=e.target.value;renderGoal()}});
+const tips=['Paga-te primeiro: assim que recebes, separa a poupança antes de gastar.','Antes de comprar algo que não precisas, espera 24 horas.','Anota todos os gastos, mesmo os pequenos: são esses que somem o dinheiro.','Um fundo de emergência de 3 meses de despesas vem antes de qualquer investimento.','Separa o dinheiro da VINDHI do teu dinheiro pessoal.','Os cigarros também custam: cada maço que não compras é poupança.'];
+document.getElementById('tip').textContent=tips[new Date().getDate()%tips.length];
+renderMoney();renderGoal();
+function resetAll(){if(confirm('Limpar tudo?')){state={};save();render();cig=0;showCig();m={exps:[],done:false,note:''};renderMoney()}}
+render();
+</script>
+</body>
+</html>
